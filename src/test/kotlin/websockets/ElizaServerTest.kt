@@ -8,6 +8,7 @@ import jakarta.websocket.ContainerProvider
 import jakarta.websocket.OnMessage
 import jakarta.websocket.Session
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
@@ -36,7 +37,7 @@ class ElizaServerTest {
         assertEquals("The doctor is in.", list[0])
     }
 
-    @Disabled // Remove this line when you implement onChat
+    //@Disabled // Remove this line when you implement onChat
     @Test
     fun onChat() {
         logger.info { "Test thread" }
@@ -48,9 +49,18 @@ class ElizaServerTest {
         latch.await()
         val size = list.size
         // 1. EXPLAIN WHY size = list.size IS NECESSARY
+        // Esta asignación es necesaria porque el tamaño de la lista puede cambiar entre el momento en
+        // que se llama a latch.await() y el momento en que se accede a list.size.
+        // Esto se debe a que las operaciones de red y los mensajes WebSocket pueden llegar en momentos
+        // impredecibles, lo que podría afectar el tamaño de la lista.
         // 2. REPLACE BY assertXXX expression that checks an interval; assertEquals must not be used;
+        assertTrue(size in 4..5, "Expected between 4 and 5 messages, but got $size")
         // 3. EXPLAIN WHY assertEquals CANNOT BE USED AND WHY WE SHOULD CHECK THE INTERVAL
+        // Porque dependiendo de las características del ordenador y la velocidad de la red,
+        // hay ocasiones en las que el cliente puede recibir o 4 o 5 mensajes.
+        // Todo este ejercicio es para resolver problemas de concurrencia.
         // 4. COMPLETE assertEquals(XXX, list[XXX])
+        assertEquals("Can you think of a specific example?", list[3])
     }
 }
 
@@ -73,7 +83,7 @@ class ComplexClient(
     private val latch: CountDownLatch,
 ) {
     @OnMessage
-    @Suppress("UNUSED_PARAMETER") // Remove this line when you implement onMessage
+    //@Suppress("UNUSED_PARAMETER") // Remove this line when you implement onMessage
     fun onMessage(
         message: String,
         session: Session,
@@ -84,6 +94,9 @@ class ComplexClient(
         // 5. COMPLETE if (expression) {
         // 6. COMPLETE   sentence
         // }
+        if (list.size == 3) {
+            session.basicRemote.sendText("always")
+        }
     }
 }
 
