@@ -9,7 +9,6 @@ import jakarta.websocket.OnMessage
 import jakarta.websocket.Session
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
@@ -37,7 +36,7 @@ class ElizaServerTest {
         assertEquals("The doctor is in.", list[0])
     }
 
-    //@Disabled // Remove this line when you implement onChat
+
     @Test
     fun onChat() {
         logger.info { "Test thread" }
@@ -83,7 +82,6 @@ class ComplexClient(
     private val latch: CountDownLatch,
 ) {
     @OnMessage
-    //@Suppress("UNUSED_PARAMETER") // Remove this line when you implement onMessage
     fun onMessage(
         message: String,
         session: Session,
