@@ -36,7 +36,6 @@ class ElizaServerTest {
         assertEquals("The doctor is in.", list[0])
     }
 
-
     @Test
     fun onChat() {
         logger.info { "Test thread" }
